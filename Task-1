@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA — Wear the Future</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f2ee;
+      --cream: #ede8e0;
+      --accent: #c8f04a;
+      --mid: #2a2a2a;
+      --muted: #888;
+      --ff-display: 'Bebas Neue', sans-serif;
+      --ff-body: 'DM Sans', sans-serif;
+    }
+ 
+    html { scroll-behavior: smooth; }
+ 
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--ff-body);
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+ 
+    /* Custom cursor */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    .cursor.grow { width: 36px; height: 36px; background: transparent; border: 2px solid var(--accent); }
+ 
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(10,10,10,0.7);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .nav-logo {
+      font-family: var(--ff-display);
+      font-size: 2rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--accent);
+      color: var(--black);
+      border: none;
+      padding: 0.6rem 1.4rem;
+      font-family: var(--ff-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: #d4ff55; transform: translateY(-1px); }
+ 
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 4rem 6rem 5rem;
+      position: relative;
+      z-index: 2;
+    }
+ 
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s ease forwards;
+    }
+ 
+    .hero-headline {
+      font-family: var(--ff-display);
+      font-size: clamp(4rem, 7vw, 7.5rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s ease forwards;
+    }
+    .hero-headline em {
+      font-style: normal;
+      color: var(--accent);
+      display: block;
+    }
+ 
+    .hero-sub {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 360px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s ease forwards;
+    }
+ 
+    .hero-actions {
+      display: flex; gap: 1rem; align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s ease forwards;
+    }
+ 
+    .btn-primary {
+      background: var(--accent);
+      color: var(--black);
+      border: none;
+      padding: 1rem 2.4rem;
+      font-family: var(--ff-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: #d4ff55; transform: translateY(-2px); }
+ 
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 1rem 2rem;
+      font-family: var(--ff-body);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--white); transform: translateY(-2px); }
+ 
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 4rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s ease forwards;
+    }
+    .stat-number {
+      font-family: var(--ff-display);
+      font-size: 2.4rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+ 
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeIn 1s 0.3s ease forwards;
+    }
+ 
+    /* Gradient image placeholder */
+    .hero-img {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #1a1a1a 0%, #111 30%, #0d1a00 60%, #1e2a04 100%);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+ 
+    /* Product silhouette made with CSS */
+    .product-visual {
+      width: 260px; height: 360px;
+      position: relative;
+    }
+    .shoe-shape {
+      width: 240px; height: 120px;
+      background: linear-gradient(120deg, var(--accent) 0%, #8fb800 100%);
+      border-radius: 0 60px 30px 10px;
+      position: absolute;
+      bottom: 60px; left: 0;
+      box-shadow: 0 30px 80px rgba(200, 240, 74, 0.3);
+      animation: float 4s ease-in-out infinite;
+    }
+    .shoe-top {
+      width: 170px; height: 100px;
+      background: linear-gradient(100deg, #222 0%, #333 100%);
+      border-radius: 40px 40px 0 0;
+      position: absolute;
+      bottom: 120px; left: 20px;
+    }
+    .shoe-sole {
+      width: 250px; height: 22px;
+      background: #111;
+      border-radius: 0 40px 40px 4px;
+      position: absolute;
+      bottom: 40px; left: -5px;
+    }
+    .shoe-accent {
+      width: 60px; height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+      position: absolute;
+      bottom: 105px; left: 50px;
+      opacity: 0.6;
+    }
+ 
+    /* Floating tag */
+    .hero-tag {
+      position: absolute;
+      top: 30%;
+      right: 8%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.4rem;
+      animation: float 5s 1s ease-in-out infinite;
+    }
+    .tag-price {
+      font-family: var(--ff-display);
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+    .tag-label { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+ 
+    /* Decorative lines */
+    .hero-line {
+      position: absolute;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+    .hero-line.h { height: 1px; width: 100%; top: 40%; }
+    .hero-line.v { width: 1px; height: 100%; left: 30%; }
+ 
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 1rem 0;
+      overflow: hidden;
+      background: var(--mid);
+    }
+    .marquee-track {
+      display: flex; gap: 3rem;
+      white-space: nowrap;
+      animation: marquee 18s linear infinite;
+    }
+    .marquee-item {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 1.2rem;
+    }
+    .marquee-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; display: inline-block; }
+ 
+    /* ── FEATURES (3-column) ── */
+    .section { padding: 7rem 5rem; }
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--ff-display);
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      line-height: 1;
+      margin-bottom: 4rem;
+    }
+ 
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+ 
+    .feature-card {
+      padding: 2.5rem;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card:last-child { border-right: none; }
+    .feature-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+    .feature-card:hover { background: rgba(255,255,255,0.02); }
+    .feature-card:hover::before { width: 100%; }
+ 
+    .feature-icon {
+      width: 48px; height: 48px;
+      border: 1px solid rgba(200,240,74,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.8rem;
+      font-size: 1.3rem;
+    }
+ 
+    .feature-num {
+      font-family: var(--ff-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: rgba(200,240,74,0.4);
+      margin-bottom: 0.8rem;
+    }
+ 
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+    .feature-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.7; }
+ 
+    /* ── PRODUCT SHOWCASE ── */
+    .showcase {
+      padding: 5rem;
+      background: var(--cream);
+      color: var(--black);
+    }
+    .showcase .section-label { color: #6a8a00; }
+    .showcase .section-title { color: var(--black); }
+ 
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: #d0cbc3;
+    }
+ 
+    .product-card {
+      background: var(--cream);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+      cursor: none;
+    }
+    .product-card:hover { background: #fff; }
+ 
+    .product-img {
+      width: 100%; aspect-ratio: 4/3;
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    /* CSS product thumbnails */
+    .p-thumb {
+      width: 140px; height: 70px;
+      border-radius: 0 40px 20px 5px;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+    .p-thumb.a { background: linear-gradient(120deg, #c8f04a, #8fb800); animation-delay: 0s; }
+    .p-thumb.b { background: linear-gradient(120deg, #111, #333); animation-delay: 0.5s; }
+    .p-thumb.c { background: linear-gradient(120deg, #e8d5b0, #c8a878); animation-delay: 1s; }
+ 
+    .product-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--black);
+      color: var(--accent);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+    }
+ 
+    .product-name {
+      font-family: var(--ff-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+    .product-sub { font-size: 0.8rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-family: var(--ff-display); font-size: 1.6rem; letter-spacing: 0.05em; }
+    .product-buy {
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-family: var(--ff-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.2s;
+    }
+    .product-buy:hover { background: #222; }
+ 
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding: 7rem 5rem; }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      margin-top: 3rem;
+    }
+    .review {
+      background: var(--black);
+      padding: 2.5rem;
+      transition: background 0.3s;
+    }
+    .review:hover { background: #111; }
+    .review-stars { color: var(--accent); font-size: 0.85rem; letter-spacing: 0.15em; margin-bottom: 1.2rem; }
+    .review-text { font-size: 0.95rem; line-height: 1.75; color: #ccc; font-style: italic; margin-bottom: 1.5rem; }
+    .review-author { display: flex; align-items: center; gap: 0.8rem; }
+    .author-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #4a7a00);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 500; color: var(--black);
+    }
+    .author-name { font-size: 0.82rem; font-weight: 500; }
+    .author-handle { font-size: 0.72rem; color: var(--muted); }
+ 
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: var(--accent);
+      color: var(--black);
+      padding: 5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 3rem;
+    }
+    .cta-band h2 {
+      font-family: var(--ff-display);
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+    }
+    .cta-band p { font-size: 0.95rem; color: rgba(0,0,0,0.6); margin-top: 1rem; }
+    .btn-dark {
+      background: var(--black);
+      color: var(--accent);
+      border: none;
+      padding: 1.1rem 2.8rem;
+      font-family: var(--ff-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-dark:hover { background: #111; transform: translateY(-2px); }
+ 
+    /* ── FOOTER ── */
+    footer {
+      background: #050505;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 4rem 5rem 2.5rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+    .footer-brand { }
+    .footer-logo {
+      font-family: var(--ff-display);
+      font-size: 2.2rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .footer-tagline { font-size: 0.85rem; color: var(--muted); line-height: 1.6; max-width: 240px; }
+    .footer-col h4 {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .footer-col a { font-size: 0.84rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      padding: 2rem 5rem;
+      background: #050505;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; }
+ 
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+ 
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+ 
+    /* Responsive basics */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .features-grid, .products-grid, .reviews-grid { grid-template-columns: 1fr; }
+      .feature-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      footer { grid-template-columns: 1fr 1fr; }
+      .cta-band { grid-template-columns: 1fr; }
+      .section, .testimonials, .showcase, .cta-band { padding: 4rem 2rem; }
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+ 
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">AURA</div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#shop">Shop</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <button class="nav-cta">Shop Now</button>
+  </nav>
+ 
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">New Collection — SS 2026</p>
+      <h1 class="hero-headline">
+        Define<br>Your <em>Edge.</em>
+      </h1>
+      <p class="hero-sub">Performance footwear engineered for those who refuse to settle. Lightweight, adaptive, and unmistakably bold.</p>
+      <div class="hero-actions">
+        <button class="btn-primary">Explore Collection</button>
+        <button class="btn-ghost">Watch Film</button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-number">48K+</div>
+          <div class="stat-label">Happy Athletes</div>
+        </div>
+        <div>
+          <div class="stat-number">4.9★</div>
+          <div class="stat-label">Avg Rating</div>
+        </div>
+        <div>
+          <div class="stat-number">12</div>
+          <div class="stat-label">Colorways</div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="hero-right">
+      <div class="hero-img">
+        <div class="hero-line h"></div>
+        <div class="hero-line v"></div>
+        <div class="product-visual">
+          <div class="shoe-top"></div>
+          <div class="shoe-shape"></div>
+          <div class="shoe-sole"></div>
+          <div class="shoe-accent"></div>
+        </div>
+      </div>
+      <div class="hero-tag">
+        <div class="tag-price">$189</div>
+        <div class="tag-label">Starting from</div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item"><span class="marquee-dot"></span> Free Shipping Over $120</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> 60-Day Returns</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Sustainably Crafted</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Limited Edition Drops</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Carbon-Neutral by 2027</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Free Shipping Over $120</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> 60-Day Returns</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Sustainably Crafted</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Limited Edition Drops</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Carbon-Neutral by 2027</span>
+    </div>
+  </div>
+ 
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <p class="section-label reveal">Why AURA</p>
+    <h2 class="section-title reveal">Built Different.<br>By Design.</h2>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-num">01</div>
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">AuraFoam™ Midsole</h3>
+        <p class="feature-desc">Responsive cushioning that absorbs impact and returns energy. Step lighter, push harder, recover faster.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">02</div>
+        <div class="feature-icon">🌬</div>
+        <h3 class="feature-title">HexBreath Upper</h3>
+        <p class="feature-desc">Engineered mesh with hexagonal ventilation channels keeps your feet dry through the longest sessions.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">03</div>
+        <div class="feature-icon">🔒</div>
+        <h3 class="feature-title">LockFit System</h3>
+        <p class="feature-desc">Adaptive lacing hugs the foot's natural shape. Zero slippage. Maximum lockdown. Pure confidence.</p>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- PRODUCT SHOWCASE -->
+  <section class="showcase" id="shop">
+    <p class="section-label reveal">Shop the Collection</p>
+    <h2 class="section-title reveal">Pick Your<br>Weapon.</h2>
+    <div class="products-grid">
+ 
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="p-thumb a"></div>
+          <div class="product-badge">New</div>
+        </div>
+        <div class="product-name">AURA X1</div>
+        <div class="product-sub">Speed Series · Volt</div>
+        <div class="product-footer">
+          <div class="product-price">$219</div>
+          <button class="product-buy">Add to Cart</button>
+        </div>
+      </div>
+ 
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="p-thumb b"></div>
+          <div class="product-badge">Bestseller</div>
+        </div>
+        <div class="product-name">AURA CORE</div>
+        <div class="product-sub">All-Day Series · Onyx</div>
+        <div class="product-footer">
+          <div class="product-price">$189</div>
+          <button class="product-buy">Add to Cart</button>
+        </div>
+      </div>
+ 
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="p-thumb c"></div>
+          <div class="product-badge">Limited</div>
+        </div>
+        <div class="product-name">AURA DRIFT</div>
+        <div class="product-sub">Lifestyle Series · Sand</div>
+        <div class="product-footer">
+          <div class="product-price">$249</div>
+          <button class="product-buy">Add to Cart</button>
+        </div>
+      </div>
+ 
+    </div>
+  </section>
+ 
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="reviews">
+    <p class="section-label reveal">Testimonials</p>
+    <h2 class="section-title reveal">Worn by<br>Believers.</h2>
+    <div class="reviews-grid">
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"These are the only shoes I've ever worn that actually get better the more I push them. Absolute game changer for my training."</p>
+        <div class="review-author">
+          <div class="author-avatar">JM</div>
+          <div>
+            <div class="author-name">Jordan M.</div>
+            <div class="author-handle">Marathon Runner</div>
+          </div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I've tried every major brand. Nothing compares to AURA's lockdown feel. Worth every rupee — and I wear them everywhere."</p>
+        <div class="review-author">
+          <div class="author-avatar">PK</div>
+          <div>
+            <div class="author-name">Priya K.</div>
+            <div class="author-handle">Fitness Coach</div>
+          </div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The HexBreath mesh is no joke — ran 18km in 35°C and my feet stayed cool the whole time. Genuinely impressive engineering."</p>
+        <div class="review-author">
+          <div class="author-avatar">AO</div>
+          <div>
+            <div class="author-name">Alex O.</div>
+            <div class="author-handle">Ultra Trail Runner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CTA BAND -->
+  <div class="cta-band">
+    <div>
+      <h2>Ready to<br>Move Different?</h2>
+      <p>Free shipping on all orders. 60-day no-questions returns.</p>
+    </div>
+    <button class="btn-dark">Shop the Full Collection →</button>
+  </div>
+ 
+  <!-- FOOTER -->
+  <footer id="about">
+    <div class="footer-brand">
+      <div class="footer-logo">AURA</div>
+      <p class="footer-tagline">Engineered for athletes who define their own limits. Performance without compromise.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Speed Series</a></li>
+        <li><a href="#">All-Day Series</a></li>
+        <li><a href="#">Lifestyle Series</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <p>© 2026 AURA Athletics. All rights reserved.</p>
+    <p>Privacy Policy · Terms of Use</p>
+  </div>
+ 
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+    });
+ 
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          // stagger siblings
+          const siblings = e.target.parentElement.querySelectorAll('.reveal');
+          siblings.forEach((s, i) => {
+            setTimeout(() => s.classList.add('visible'), i * 100);
+          });
+        }
+      });
+    }, { threshold: 0.12 });
+ 
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
